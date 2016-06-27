@@ -1,0 +1,14 @@
+package ArrayRandom;
+
+public class main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		rolling a =new rolling();
+		a.aaa();
+		double Z = 3.21222;
+		Z = Z*100/100;
+		System.out.println(Z);
+	}
+
+}

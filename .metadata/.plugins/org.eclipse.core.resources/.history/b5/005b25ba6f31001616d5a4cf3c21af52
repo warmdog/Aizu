@@ -1,0 +1,287 @@
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.concurrent.SynchronousQueue;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
+//import net.moraleboost.mecab.Lattice;
+//import net.moraleboost.mecab.Node;
+//import net.moraleboost.mecab.Tagger;
+//import net.moraleboost.mecab.impl.StandardTagger;
+
+public class TFIDFDemoE {
+
+	public static void main(String[] args){
+		
+		List<String> documents = new ArrayList<String>();
+//		documents.add("weather  sis fineis is rainy.");
+//		documents.add("weather cloudy fine.");
+//		documents.add("basketball baseball soccer baseball");
+		TFIDFDemoE tfid = new TFIDFDemoE();
+		String sports  = tfid.count("C:/Users/18868/Desktop/test/sports1.txt");
+		String sports1 = tfid.count("C:/Users/18868/Desktop/test/sports2.txt");
+		String sports2 = tfid.count("C:/Users/18868/Desktop/test/sports3.txt");
+		String sports3 = tfid.count("C:/Users/18868/Desktop/test/sports4.txt");
+		String sports4 = tfid.count("C:/Users/18868/Desktop/test/sports5.txt");
+		String economy = tfid.count("C:/Users/18868/Desktop/test/ecnomy1.txt");
+		String economy1 = tfid.count("C:/Users/18868/Desktop/test/ecnomy2.txt");
+		String economy2 = tfid.count("C:/Users/18868/Desktop/test/ecnomy3.txt");
+		String economy3 = tfid.count("C:/Users/18868/Desktop/test/ecnomy4.txt");
+		String economy4 = tfid.count("C:/Users/18868/Desktop/test/ecnomy5.txt");
+		System.out.println("Please input number（0，1，2）："); 
+		Scanner sr = new Scanner(System.in); 
+		//sr.useDelimiter("\n");
+		//while(sr!=null){
+		int k = sr.nextInt();
+		if(k==0){
+			documents.add(sports);
+			documents.add(sports1);
+			documents.add(sports2);
+			documents.add(sports3);
+			documents.add(sports4);
+		}else if(k==1){
+			documents.add(sports);
+			documents.add(economy);
+		}else if(k==2){
+			documents.add(economy);
+			documents.add(economy1);
+			documents.add(economy2);
+			documents.add(economy3);
+			documents.add(economy4);
+		}else{
+			System.out.println("error number!");
+		}
+			sr.close();
+		//}
+        List<String> sportsfilepaths  = 	new ArrayList<String>();
+      
+		FeatureVectorGeneratorE generator = new FeatureVectorGeneratorE();
+		Map<String, double[]> featureVectors = generator.generateTFIDFVectors(documents);
+		List<String> test = new ArrayList<String>();
+		List<String> test2 = new ArrayList<String>();
+		//System.out.println(featureVectors.size());
+		for(Map.Entry<String, double[]> entry : featureVectors.entrySet()){
+			String string = entry.getKey();
+			test = tfid.spolit(string,test);
+//			Map.Entry<String, double[]> entry1 =  tfid.sortMap(entry);
+//			test.add(string);
+			
+//			int n = featureVectors.size();
+//			int m = 0;
+//			if(tfid.check(test)){
+//				m++;
+//			}
+			System.out.println("--- Document ---");			
+			System.out.println(entry.getKey());
+			//String string = entry.getKey();,
+//			//
+//			test.add(string);
+			System.out.println("--- Feature Vector ---");
+			double[] featureVector = entry.getValue();
+			System.out.print("(");
+			for(int i=0; i < featureVector.length; i++){
+				try{
+					if(i<(featureVector.length/4)){
+						File writename = new File("C:/Users/18868/Desktop/SVM_Light/SVM_Light/example1/test22.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件  
+			           // writename.createNewFile(); // 创建新文件  
+			            BufferedWriter out = new  BufferedWriter( new  OutputStreamWriter(  
+			                    new  FileOutputStream(writename,  true )));  
+			            out.write(String.format("%.5f", -featureVector[i]));
+			            out.write("\r\n"); // \r\n即为换行  
+			            out.flush(); // 把缓存区内容压入文件  
+			            out.close();	
+					}else if(i>(featureVector.length/4)&&i<(featureVector.length/2)){
+						File writename = new File("C:/Users/18868/Desktop/SVM_Light/SVM_Light/example1/test33.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件  
+				           // writename.createNewFile(); // 创建新文件  
+				            BufferedWriter out = new  BufferedWriter( new  OutputStreamWriter(  
+				                    new  FileOutputStream(writename,  true )));  
+				            out.write(String.format("%.5f", -featureVector[i]));
+				            out.write("\r\n"); // \r\n即为换行  
+				            out.flush(); // 把缓存区内容压入文件  
+				            out.close();
+					}
+					
+					else if(i>(featureVector.length/2)&&i<(featureVector.length*3/4)){
+						File writename = new File("C:/Users/18868/Desktop/SVM_Light/SVM_Light/example1/test33.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件  
+				           // writename.createNewFile(); // 创建新文件  
+				            BufferedWriter out = new  BufferedWriter( new  OutputStreamWriter(  
+				                    new  FileOutputStream(writename,  true )));  
+				            out.write(String.format("%.5f", featureVector[i]));
+				            out.write("\r\n"); // \r\n即为换行  
+				            out.flush(); // 把缓存区内容压入文件  
+				            out.close();
+					}
+					else if(i>(featureVector.length*3/4)){
+						File writename = new File("C:/Users/18868/Desktop/SVM_Light/SVM_Light/example1/test33.txt"); // 相对路径，如果没有则要建立一个新的output。txt文件  
+				           // writename.createNewFile(); // 创建新文件  
+				            BufferedWriter out = new  BufferedWriter( new  OutputStreamWriter(  
+				                    new  FileOutputStream(writename,  true )));  
+				            out.write(String.format("%.2f", featureVector[i]));
+				            out.write("\r\n"); // \r\n即为换行  
+				            out.flush(); // 把缓存区内容压入文件  
+				            out.close();
+					}
+					}catch(Exception e)
+						
+					{
+						e.printStackTrace();
+					}
+				System.out.print(String.format("%.2f", featureVector[i]));
+				
+				if(i != featureVector.length-1){
+					System.out.print(", ");
+				}
+			}
+			System.out.println(")");
+			
+			System.out.println("");
+			break;
+		}
+		System.out.println(test.size());
+		int n = featureVectors.size();
+		int m= 0;
+		for(Map.Entry<String, double[]> entry : featureVectors.entrySet()){
+			List<String> test1 = new ArrayList<String>();
+	
+			String string = entry.getKey();
+			int x= 0;
+			List<String> list = tfid.spolit(string,test1);
+			for(String strings : list){
+				if(test.contains(strings)&&!test2.contains(strings)){
+				
+					test2.add(strings);
+					if(x==0){
+						m++;
+						x++;
+					}
+					
+				}
+			}
+			System.out.println("==================================");
+			System.out.println(m + "  Compare Above");
+			for(String output : test2){
+				if(test.contains(output)){
+					System.out.print(output+',');
+				}
+			}
+			System.out.println();
+			
+//			break;
+			test.clear();
+			for(String copy :test2){
+				test.add(copy);
+			}
+			test2.clear();
+		}
+		if(m==n){
+			System.out.println("ok");
+			System.out.println("test's size" +test.size());
+			for(String string :test){
+				
+				System.out.print(string+",");
+			}
+			for(String string :test2){
+				System.out.print(string+",");
+			}
+		}else{
+			System.out.println(m);
+			for(String string :test){
+				System.out.print(string+",");
+			}
+		}
+	}
+	private String count(String filePath){
+		try{
+			File myFile = new File(filePath);
+			FileReader fileReader = new FileReader(myFile);
+			BufferedReader reader = new BufferedReader(fileReader);
+			String line =null;
+			//number of cancellation
+			String string ="";
+			while((line =reader.readLine())!= null){
+				string = string +line;
+			}
+			reader.close();
+			return string;
+		}catch(Exception e){
+			System.out.println("read file wrong!");
+			e.printStackTrace();
+			return null;
+		}
+		//return line;
+	}
+//	public boolean check(String string,List<String> list,List<String> list1){
+//		list = spolit(string,list1);
+//		for(String strings : list1){
+//			if(list.contains(strings)){
+//				return true;
+//			}
+//		}
+//		return true;
+//	}
+	public List<String> spolit(String bb,List<String> list){
+		//List<String> list = new ArrayList<String>();
+		String[] strings = bb.split(" ");
+		for(int i =0;i<strings.length;i++){
+			list.add(strings[i]);
+		}
+		return list;
+		//System.out.println(colums[0]);
+	}
+	public Entry<String, double[]> sortMap(Entry<String, double[]> entry){
+		Map<String,double[]> result = new HashMap<String,double[]>();
+//		Map.Entry<String,double[]> map = (Map.Entry<String,double[]>)iterator.next();
+		String string =  entry.getKey();
+		double tempv =0.0;
+		String temps = null;
+		    
+		double[] value =  entry.getValue();
+		String[] strings = string.split("\\s+");
+		System.out.println(strings.length);
+		System.out.println(value.length);
+		for(int i =0;i<value.length;i++){
+			for(int j = i ; j < value.length-1 ; j++){
+				if(value[i] < value[j+1]){
+					tempv = value[i];
+					value[i] = value[j+1];
+					value[j+1] = tempv;
+					
+					temps = strings[i];
+					strings[i] =strings[j+1];
+					strings[j+1] =temps;
+				}
+					
+			}
+		}
+		for(int i= 0; i<strings.length;i++){
+			System.out.print( strings[i]+"+");
+		}
+		for(int i= 0; i<value.length;i++){
+			System.out.print(String.format("%.2f", value[i])+"+");
+		}
+		
+		result.put(string, value);
+	//	Entry<String, double[]> map =null;
+		Map.Entry<String,double[]> map =result.entrySet().iterator().next();
+
+		return map;
+		
+	}
+
+}
+

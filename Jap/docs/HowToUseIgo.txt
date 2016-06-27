@@ -1,0 +1,79 @@
+/***************************************/
+How to Use IGO
+/***************************************/
+
+Main Source Page:
+http://igo.sourceforge.jp/
+
+I. Install
+1) Download Igo Jar file
+Entire --> http://sourceforge.jp/projects/igo/releases/
+Download file --> http://sourceforge.jp/projects/igo/downloads/55029/igo-0.4.5.jar/
+
+2) Analysis Dictionary Preparation 
+- Download Mecab Dictionary (IPA Dictionary)
+  https://code.google.com/p/mecab/downloads/detail?name=mecab-ipadic-2.7.0-20070801.tar.gz
+- IPA Dictionary Unzip 
+  $ tar xvf mecab-ipadic-2.7.0-20070801.tar.gz  
+
+3) Binary Dictionary for Analysis Preparation 
+  $ java -cp igo-0.4.3.jar net.reduls.igo.bin.BuildDic ipadic mecab-ipadic-2.7.0-20070801 EUC-JP
+
+
+
+II. Using Morphological Analyzer
+1) Morphological Analyzer
+  $ java -cp igo-0.4.3.jar net.reduls.igo.bin.Igo ipadic 
+-----
+すもももももももものうち [Enter]  
+
+すもも	名詞,一般,*,*,*,*,すもも,スモモ,スモモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+の	助詞,連体化,*,*,*,*,の,ノ,ノ
+うち	名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ
+EOS
+-----
+
+  # 分かち書き
+  $ java -cp igo-0.4.3.jar net.reduls.igo.bin.Igo -wakati ipadic 
+---
+すもももももももものうち [Enter]
+  
+すもも も もも も もも の うち
+コマンド
+----
+
+
+III. How to Use in Java Code
+
+--- Sample.java ---
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import net.reduls.igo.Tagger;
+import net.reduls.igo.Morpheme;
+
+/**
+ * 標準入力からテキストを読み込んで、形態素解析結果を標準出力に出力する
+ *  - コンパイル: javac -cp igo-0.4.5.jar Sample.java
+ *  - 実行: java -cp .;igo-0.4.5.jar Sample <バイナリ辞書ディレクトリ>
+ *  - 実行: java -cp .;igo-0.4.5.jar Sample ipadic
+ */
+public class Sample {
+    public static void main(String[] args) throws IOException {
+        if(args.length != 1)
+            System.exit(1);
+
+        final String dicDir = args[0];
+        final Tagger tagger = new Tagger(dicDir);
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Sample Test");
+        for(String line=br.readLine(); line!=null; line=br.readLine())
+            for(Morpheme m : tagger.parse(line))
+                System.out.println(m.surface+"\t"+m.feature);
+    }
+}
+-----

@@ -1,0 +1,10 @@
+mkdir classes
+javac -d classes svm\kernel\*.java
+javac -d classes svm\*.java
+
+jar -cv MySVM.jar -C classes .
+
+javac FeatureVectorGenerator.java
+javac -cp .;MySVM.jar SVMDemo.java
+
+java -cp .;MySVM.jar SVMDemo   // this is for run
